@@ -1,11 +1,18 @@
 package org.musicinbox.android;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,6 +27,8 @@ import android.util.Log;
 public class MusicInbox extends Activity {
 	
 	private static final String TAG = "MusicInbox";
+	
+	private static final URI postUri = URI.create("http://192.168.1.101:8000/api/json/");
 	
     /** Called when the activity is first created. */
     @Override
@@ -48,6 +57,18 @@ public class MusicInbox extends Activity {
         JSONObject json = toJson(albumsByArtists);
         
         // post json
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        HttpPost post = new HttpPost(postUri);
+        try {
+			post.setEntity(new StringEntity(json.toString(), "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+		try {
+			httpClient.execute(post);
+		} catch (IOException e) {
+			Log.e(TAG, e.getMessage());
+		}
     }
 
 	private JSONObject toJson(Map<String, Set<String>> albumsByArtists) {

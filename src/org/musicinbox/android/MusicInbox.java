@@ -3,6 +3,7 @@ package org.musicinbox.android;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +43,7 @@ public class MusicInbox extends Activity {
 	
 	private static final String TAG = "MusicInbox";
 	
-	private static final URI postUri = URI.create("http://192.168.1.101:8000/api/json/");
+	private static final URI postUri = URI.create("http://192.168.0.1:8000/api/library/form/");
 	
 	private static final int NO_ARTIST_DATA_DIALOG = 0;
 	
@@ -115,6 +116,7 @@ public class MusicInbox extends Activity {
 	        	}
 	        }
 	        ca.close();
+	        albumsByArtists.put("name", Collections.singleton("My Android Artists"));
 	        return albumsByArtists;
 		}
     	
@@ -148,7 +150,10 @@ public class MusicInbox extends Activity {
 					HttpEntity entity = response.getEntity();
 					if (entity != null) {
 						String json = EntityUtils.toString(entity);
+						Log.d(TAG, json);
 						return new JSONObject(json);
+					} else {
+						Log.e(TAG, "no http entity");
 					}
 				}
 			} catch (IOException e) {

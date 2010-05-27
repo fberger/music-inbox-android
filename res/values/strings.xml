@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, MusicInbox!</string>
+    <string name="introduction">Welcome to Music Inbox.\nUpload your favorite artists and build your personalized music feed.
+    </string>
     <string name="app_name">Music Inbox</string>
+<string name="scan_dialog_title"></string>
+<string name="scan_button_text">Setup\nMusic Inbox</string>
+<string name="rss_title">New Releases</string>
 </resources>

@@ -28,8 +28,11 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.net.Uri;
@@ -37,11 +40,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 
 public class MusicInbox extends Activity {
 	
-	private static final String TAG = "MusicInbox";
+	public static final String TAG = "MusicInbox";
 	
 	private static final URI postUri = URI.create("http://192.168.0.1:8000/api/library/form/");
 	
@@ -49,13 +54,27 @@ public class MusicInbox extends Activity {
 	
 	private static final int POST_ERROR_DIALOG = 1;
 	
+	private static final int UPLOAD_PROGRESS_DIALOG = 3;
+	
+	private ProgressDialog uploadProgressDialog;
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        Log.i(TAG, "All the titles");
-        new QueryAritistsTask().execute();
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        if (preferences.getBoolean("first_time", true)) {
+        	setContentView(R.layout.welcome);
+        	Button setupButton = (Button) findViewById(R.id.welcome_button_setup);
+            setupButton.setOnClickListener(new View.OnClickListener() {
+    			public void onClick(View v) {
+    				showDialog(UPLOAD_PROGRESS_DIALOG);
+    				new QueryAritistsTask(uploadProgressDialog).execute();
+    			}
+    		});
+        } else {
+        	startActivity(new Intent(getApplicationContext(), RssActivity.class));
+        }
     }
     
     @Override
@@ -79,6 +98,11 @@ public class MusicInbox extends Activity {
 				}
 			});
     		return builder.create();
+    	case UPLOAD_PROGRESS_DIALOG:
+    		uploadProgressDialog = new ProgressDialog(this);
+    		uploadProgressDialog.setTitle("Sending data");
+    		uploadProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+    		return uploadProgressDialog;
     	default:
     		throw new IllegalArgumentException("unhandled id " + id);
     	}
@@ -96,6 +120,12 @@ public class MusicInbox extends Activity {
     }
     
     private class QueryAritistsTask extends AsyncTask<Void, Void, Map<String, Set<String>>> {
+
+		private final ProgressDialog progressDialog;
+
+		public QueryAritistsTask(ProgressDialog progressDialog) {
+			this.progressDialog = progressDialog;
+		}
 
 		@Override
 		protected Map<String, Set<String>> doInBackground(Void... params) {
@@ -126,13 +156,22 @@ public class MusicInbox extends Activity {
 			if (result.isEmpty()) {
 				showDialog(NO_ARTIST_DATA_DIALOG);
 			} else {
+				progressDialog.incrementProgressBy(10);
 				// show in ui maybe
-				new PostArtistsDataTask().execute(result);
+				new PostArtistsDataTask(progressDialog).execute(result);
 			}
 		}
     }
     
     private class PostArtistsDataTask extends AsyncTask<Map<String, Set<String>>, Void, JSONObject> {
+
+		private final ProgressDialog progressDialog;
+
+
+		public PostArtistsDataTask(ProgressDialog progressDialog) {
+			this.progressDialog = progressDialog;
+		}
+
 
 		@Override
 		protected JSONObject doInBackground(Map<String, Set<String>>... params) {
@@ -169,6 +208,8 @@ public class MusicInbox extends Activity {
 		
 		@Override
 		protected void onPostExecute(JSONObject result) {
+			progressDialog.setProgress(10000);
+			progressDialog.dismiss();
 			if (result == null) {
 				Log.d(TAG, "error posting");
 				showDialog(POST_ERROR_DIALOG);
@@ -180,8 +221,12 @@ public class MusicInbox extends Activity {
 				showDialog(POST_ERROR_DIALOG);
 			} else {
 				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent.setDataAndType(Uri.parse(rssUri), "application/rss+xml");
-				startActivity(intent);
+				intent.setDataAndType(null /*Uri.parse(rssUri)*/, "application/rss+xml");
+				try {
+					startActivity(intent);
+				} catch (ActivityNotFoundException e) {
+					Log.d(TAG, e.getMessage());
+				}
 			}
 		}
     }

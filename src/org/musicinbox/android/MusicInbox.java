@@ -48,7 +48,7 @@ public class MusicInbox extends Activity {
 	
 	public static final String TAG = "MusicInbox";
 	
-	private static final URI postUri = URI.create("http://192.168.0.1:8000/api/library/form/");
+	private static final URI postUri = URI.create("http://10.0.2.2:8000/api/library/form/");
 	
 	private static final int NO_ARTIST_DATA_DIALOG = 0;
 	
@@ -221,7 +221,7 @@ public class MusicInbox extends Activity {
 				showDialog(POST_ERROR_DIALOG);
 			} else {
 				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent.setDataAndType(null /*Uri.parse(rssUri)*/, "application/rss+xml");
+				intent.setDataAndType(Uri.parse(rssUri), "application/rss+xml");
 				try {
 					startActivity(intent);
 				} catch (ActivityNotFoundException e) {

@@ -64,6 +64,7 @@ public class MusicInbox extends Activity {
         super.onCreate(savedInstanceState);
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         if (preferences.getBoolean("first_time", true)) {
+        	preferences.edit().putBoolean("first_time", false).commit();
         	setContentView(R.layout.welcome);
         	Button setupButton = (Button) findViewById(R.id.welcome_button_setup);
             setupButton.setOnClickListener(new View.OnClickListener() {
@@ -217,6 +218,7 @@ public class MusicInbox extends Activity {
 			}
 			// post rss intent
 			String rssUri = result.optString("rssUri", null);
+			rssUri = "http://10.0.2.2:8000/library/feeds/newalbums/15670963163439152299/";
 			if (rssUri == null) {
 				showDialog(POST_ERROR_DIALOG);
 			} else {

@@ -19,8 +19,7 @@ import android.util.Xml.Encoding;
 public class RssParser {
 
 	public static Channel parse(InputStream in, Encoding encoding) throws IOException, SAXException {
-		final SimpleDateFormat dateFormatter = 
-	        new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
+		final SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
 		RootElement rss = new RootElement("rss");
 		final ChannelBuilder channelBuilder = new ChannelBuilder();
 		final ItemBuilder itemBuilder = new ItemBuilder();

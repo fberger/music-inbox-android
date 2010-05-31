@@ -5,11 +5,12 @@
     android:layout_height="fill_parent"
     android:background="@color/musicinbox_blue"
     >
-<TextView  
+<TextView
+    android:id="@+id/rss_title"  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
-    android:text="@string/rss_title"
     android:textColor="@color/text_white"
+    android:textSize="16dp"
     />
 <ListView
 android:id="@android:id/list"

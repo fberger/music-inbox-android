@@ -18,6 +18,9 @@
 		<action android:name="android.intent.action.VIEW"></action>
 		<category android:name="android.intent.category.DEFAULT"></category>
 	</intent-filter>
+<intent-filter><category android:name="android.intent.category.LAUNCHER"></category>
+<action android:name="android.intent.action.MAIN"></action>
+</intent-filter>
 </activity>
 </application>
     <uses-sdk android:minSdkVersion="4" />

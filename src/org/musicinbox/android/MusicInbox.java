@@ -29,10 +29,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.net.Uri;
@@ -56,26 +54,22 @@ public class MusicInbox extends Activity {
 	
 	private static final int UPLOAD_PROGRESS_DIALOG = 3;
 	
+	public static final int SCAN_ARTISTS_RESULT = 0;
+	
 	private ProgressDialog uploadProgressDialog;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        if (preferences.getBoolean("first_time", true)) {
-        	preferences.edit().putBoolean("first_time", false).commit();
-        	setContentView(R.layout.welcome);
-        	Button setupButton = (Button) findViewById(R.id.welcome_button_setup);
-            setupButton.setOnClickListener(new View.OnClickListener() {
-    			public void onClick(View v) {
-    				showDialog(UPLOAD_PROGRESS_DIALOG);
-    				new QueryAritistsTask(uploadProgressDialog).execute();
-    			}
-    		});
-        } else {
-        	startActivity(new Intent(getApplicationContext(), RssActivity.class));
-        }
+    	setContentView(R.layout.welcome);
+    	Button setupButton = (Button) findViewById(R.id.welcome_button_setup);
+        setupButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				showDialog(UPLOAD_PROGRESS_DIALOG);
+				new QueryAritistsTask(uploadProgressDialog).execute();
+			}
+		});
     }
     
     @Override
@@ -224,11 +218,8 @@ public class MusicInbox extends Activity {
 			} else {
 				Intent intent = new Intent(Intent.ACTION_VIEW);
 				intent.setDataAndType(Uri.parse(rssUri), "application/rss+xml");
-				try {
-					startActivity(intent);
-				} catch (ActivityNotFoundException e) {
-					Log.d(TAG, e.getMessage());
-				}
+				setResult(SCAN_ARTISTS_RESULT, intent);
+				finish();
 			}
 		}
     }

@@ -39,6 +39,8 @@ public class RssActivity extends ListActivity {
 	
 	private static final int PROGRESS_DIALOG = 0;
 	private ProgressDialog progressDialog;
+	
+	public static final int SCAN_ARTISTS_REQUEST = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,25 +48,43 @@ public class RssActivity extends ListActivity {
 		setContentView(R.layout.rss);
 
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		
-		Intent intent = getIntent();
-		Uri uri = intent.getData();
-		if (uri != null) {
-			Log.d(TAG, "rss uri" + uri.toString());
-			Editor editor = preferences.edit();
-			editor.putString("rssUri", uri.toString());
-			editor.commit();
-			new GetRssChannel().execute(uri);
-		} else {
-			// load existing rss feed
-			String rssUri = preferences.getString("rssUri", null);
-			if (rssUri != null) {
-				new GetRssChannel().execute(Uri.parse(rssUri));
-			}
+		if (preferences.getBoolean("first_time", true)) {
+        	preferences.edit().putBoolean("first_time", false).commit();
+        	startActivityForResult(new Intent(getApplicationContext(), MusicInbox.class),
+        			SCAN_ARTISTS_REQUEST);
+        } else {
+        	Intent intent = getIntent();
+        	handleIntent(intent);
 		}
+	}
+	
+	private void handleIntent(Intent intent) {
+		Uri uri = intent.getData();
+		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+    	if (uri != null) {
+    		Log.d(TAG, "rss uri" + uri.toString());
+    		Editor editor = preferences.edit();
+    		editor.putString("rssUri", uri.toString());
+    		editor.commit();
+    		new GetRssChannel().execute(uri);
+    	} else {
+    		// load existing rss feed
+    		String rssUri = preferences.getString("rssUri", null);
+    		if (rssUri != null) {
+    			new GetRssChannel().execute(Uri.parse(rssUri));
+    		}
+    	}
 	}
 
 	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		if (requestCode == SCAN_ARTISTS_REQUEST && resultCode == MusicInbox.SCAN_ARTISTS_RESULT) {
+			handleIntent(intent);
+		}
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
 	public ArrayAdapter<Item> getListAdapter() {
 		return (ArrayAdapter<Item>) super.getListAdapter();
 	}

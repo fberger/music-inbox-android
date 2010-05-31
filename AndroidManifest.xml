@@ -6,13 +6,10 @@
     <application android:icon="@drawable/icon" android:label="@string/app_name">
         <activity android:name=".MusicInbox"
                   android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
-    <activity android:name=".RssActivity">
+    <activity android:name=".RssActivity"
+    		  android:label="@string/app_name">
 	<intent-filter>
 		<data android:mimeType="application/rss+xml" android:scheme="http"></data>
 		<action android:name="android.intent.action.VIEW"></action>

@@ -1,11 +1,15 @@
 package org.musicinbox.android.rss;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.musicinbox.android.Utils;
 
 import android.net.Uri;
 
+/**
+ * Represents an rss 2.0 channel.
+ */
 public class Channel {
 
 	private final String title;

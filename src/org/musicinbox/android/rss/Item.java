@@ -6,6 +6,9 @@ import org.musicinbox.android.Utils;
 
 import android.net.Uri;
 
+/**
+ * Represents an rss 2.0 item.
+ */
 public class Item {
 	
 	private final String title;

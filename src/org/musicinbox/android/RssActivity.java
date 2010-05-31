@@ -38,10 +38,13 @@ import android.widget.TextView;
 public class RssActivity extends ListActivity {
 	
 	private static final int PROGRESS_DIALOG = 0;
+	/**
+	 * Dialog completely managed by {@link GetRssChannelTask}.
+	 */
 	private ProgressDialog progressDialog;
 	
 	public static final int SCAN_ARTISTS_REQUEST = 0;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,12 +69,12 @@ public class RssActivity extends ListActivity {
     		Editor editor = preferences.edit();
     		editor.putString("rssUri", uri.toString());
     		editor.commit();
-    		new GetRssChannel().execute(uri);
+    		new GetRssChannelTask().execute(uri);
     	} else {
     		// load existing rss feed
     		String rssUri = preferences.getString("rssUri", null);
     		if (rssUri != null) {
-    			new GetRssChannel().execute(Uri.parse(rssUri));
+    			new GetRssChannelTask().execute(Uri.parse(rssUri));
     		}
     	}
 	}
@@ -113,7 +116,7 @@ public class RssActivity extends ListActivity {
 		}
 	}
 	
-	private class GetRssChannel extends AsyncTask<Uri, Integer, Channel> implements ProgressMonitor {
+	private class GetRssChannelTask extends AsyncTask<Uri, Integer, Channel> implements ProgressMonitor {
 		
 		@Override
 		protected void onPreExecute() {

@@ -46,7 +46,8 @@ public class MusicInbox extends Activity {
 	
 	public static final String TAG = "MusicInbox";
 	
-	private static final URI postUri = URI.create("http://10.0.2.2:8000/api/library/form/");
+	//private static final URI postUri = URI.create("http://10.0.2.2:8000/api/library/form/");
+	private static final URI postUri = URI.create("http://musicinbox.org/api/library/form/");
 	
 	private static final int NO_ARTIST_DATA_DIALOG = 0;
 	
@@ -189,6 +190,8 @@ public class MusicInbox extends Activity {
 					} else {
 						Log.e(TAG, "no http entity");
 					}
+				} else {
+					Log.e(TAG, "response " + response.getStatusLine());
 				}
 			} catch (IOException e) {
 				Log.e(TAG, e.getMessage());
@@ -212,7 +215,7 @@ public class MusicInbox extends Activity {
 			}
 			// post rss intent
 			String rssUri = result.optString("rssUri", null);
-			rssUri = "http://10.0.2.2:8000/library/feeds/newalbums/15670963163439152299/";
+			//rssUri = "http://10.0.2.2:8000/library/feeds/newalbums/15670963163439152299/";
 			if (rssUri == null) {
 				showDialog(POST_ERROR_DIALOG);
 			} else {

@@ -51,8 +51,7 @@ public class RssActivity extends ListActivity {
 		setContentView(R.layout.rss);
 
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		if (preferences.getBoolean("first_time", true)) {
-        	preferences.edit().putBoolean("first_time", false).commit();
+		if (preferences.getString("rssUri", null) == null) {
         	startActivityForResult(new Intent(getApplicationContext(), MusicInbox.class),
         			SCAN_ARTISTS_REQUEST);
         } else {
@@ -66,9 +65,7 @@ public class RssActivity extends ListActivity {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
     	if (uri != null) {
     		Log.d(TAG, "rss uri" + uri.toString());
-    		Editor editor = preferences.edit();
-    		editor.putString("rssUri", uri.toString());
-    		editor.commit();
+    		preferences.edit().putString("rssUri", uri.toString()).commit();
     		new GetRssChannelTask().execute(uri);
     	} else {
     		// load existing rss feed

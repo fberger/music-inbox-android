@@ -96,8 +96,8 @@ public class MusicInbox extends Activity {
     		return builder.create();
     	case UPLOAD_PROGRESS_DIALOG:
     		uploadProgressDialog = new ProgressDialog(this);
-    		uploadProgressDialog.setTitle("Sending data");
-    		uploadProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+    		uploadProgressDialog.setTitle(R.string.music_inbox_progress_text);
+    		uploadProgressDialog.setIndeterminate(true);
     		return uploadProgressDialog;
     	default:
     		throw new IllegalArgumentException("unhandled id " + id);

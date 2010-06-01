@@ -6,4 +6,5 @@
 <string name="scan_dialog_title"></string>
 <string name="scan_button_text">Setup\nMusic Inbox</string>
 <string name="rss_title">New Releases</string>
+<string name="music_inbox_progress_text">Uploading artist data...</string>
 </resources>

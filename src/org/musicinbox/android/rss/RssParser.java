@@ -70,7 +70,7 @@ public class RssParser {
 			}
 		});
 		
-		Xml.parse(in, Xml.Encoding.UTF_8, rss.getContentHandler());
+		Xml.parse(in, encoding, rss.getContentHandler());
 		return channelBuilder.build();
 	}
 	
